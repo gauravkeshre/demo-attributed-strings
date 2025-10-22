@@ -7,7 +7,7 @@
 
 #import "HomeTableViewController.h"
 #import "HomeViewModel.h"
-#import "HomeTableHeaderView.h"
+#import "TableHeaderView.h"
 #import "BaseDetailViewController.h"
 #import "PlainTextViewController.h"
 #import "PartiallyFormattedViewController.h"
@@ -183,7 +183,7 @@
 #pragma mark - Utility
 
 - (void)setupTableHeaderView {
-    HomeTableHeaderView *headerView = [[HomeTableHeaderView alloc] init];
+    TableHeaderView *headerView = [[TableHeaderView alloc] init];
     
     // Create a container view to ensure proper height
     UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 104)];

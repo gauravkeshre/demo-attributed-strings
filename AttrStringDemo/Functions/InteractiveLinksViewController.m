@@ -89,7 +89,7 @@
         self.demoTextView.editable = NO;
         self.demoTextView.scrollEnabled = NO;
         self.demoTextView.selectable = YES; // Enable selection to make links tappable
-        self.demoTextView.dataDetectorTypes = UIDataDetectorTypeNone; // Disable automatic data detection
+        self.demoTextView.dataDetectorTypes = UIDataDetectorTypeLink; // Disable automatic data detection
     }
 }
 
@@ -101,12 +101,6 @@
         return NO; // Prevent default URL handling
     }
     return YES;
-}
-
-// Fallback for older iOS versions
-- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
-    [self handleCustomURL:URL];
-    return NO; // Prevent default URL handling
 }
 
 - (void)handleCustomURL:(NSURL *)URL {

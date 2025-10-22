@@ -7,6 +7,7 @@
 
 #import "BaseDetailViewController.h"
 #import "HomeViewModel.h"
+#import "TableHeaderView.h"
 
 typedef NS_ENUM(NSInteger, DetailSection) {
     DetailSectionUILabel = 0,
@@ -47,6 +48,9 @@ typedef NS_ENUM(NSInteger, DetailSection) {
     
     // Create demo views
     [self setupDemoViews];
+    
+    // Setup table header view
+    [self setupTableHeaderView];
 }
 
 - (void)setupNavigationBar {
@@ -83,6 +87,33 @@ typedef NS_ENUM(NSInteger, DetailSection) {
 - (void)editButtonTapped:(UIBarButtonItem *)sender {
     // To be implemented later
     NSLog(@"Edit button tapped - functionality to be added later");
+}
+
+- (void)setupTableHeaderView {
+    // Create header view with class name as title and description from view model
+    NSString *className = NSStringFromClass([self class]);
+    NSString *description = self.viewModel.descriptionText ?: @"No description available";
+    
+    TableHeaderView *headerView = [[TableHeaderView alloc] initWithTitle:className description:description];
+    
+    // Create a container view to ensure proper height
+    UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 120)];
+    containerView.backgroundColor = [UIColor systemBackgroundColor];
+    
+    // Add header view to container
+    headerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [containerView addSubview:headerView];
+    
+    // Set up constraints to fill the container
+    [NSLayoutConstraint activateConstraints:@[
+        [headerView.topAnchor constraintEqualToAnchor:containerView.topAnchor],
+        [headerView.leadingAnchor constraintEqualToAnchor:containerView.leadingAnchor],
+        [headerView.trailingAnchor constraintEqualToAnchor:containerView.trailingAnchor],
+        [headerView.bottomAnchor constraintEqualToAnchor:containerView.bottomAnchor]
+    ]];
+    
+    // Set as table header view
+    self.tableView.tableHeaderView = containerView;
 }
 
 #pragma mark - Table view data source
