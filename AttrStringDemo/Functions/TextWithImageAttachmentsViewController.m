@@ -17,13 +17,12 @@
     
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:firstPart];
     
-    // Create first image attachment (system heart.fill image as PNG)
+    // Create first image attachment (shutter image from assets)
     NSTextAttachment *heartAttachment = [[NSTextAttachment alloc] init];
-    UIImage *heartImage = [UIImage systemImageNamed:@"heart.fill"];
+    UIImage *heartImage = [UIImage imageNamed:@"shutter"];
     if (heartImage) {
-        // Tint the image red and resize
-        UIImage *tintedImage = [heartImage imageWithTintColor:[UIColor systemRedColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
-        heartAttachment.image = tintedImage;
+        // Use the image as-is (no tinting needed for asset images)
+        heartAttachment.image = heartImage;
         
         // Set bounds to match text size
         CGFloat fontSize = 17.0;
@@ -39,7 +38,7 @@
     
     // Create second image attachment (iOS app icon style)
     NSTextAttachment *appIconAttachment = [[NSTextAttachment alloc] init];
-    UIImage *appIcon = [UIImage systemImageNamed:@"app.fill"];
+    UIImage *appIcon = [UIImage imageNamed:@"helmet"];
     if (appIcon) {
         // Tint the image blue and resize
         UIImage *tintedAppIcon = [appIcon imageWithTintColor:[UIColor systemBlueColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -59,13 +58,10 @@
     
     // Create third image attachment (star)
     NSTextAttachment *starAttachment = [[NSTextAttachment alloc] init];
-    UIImage *starImage = [UIImage systemImageNamed:@"star.fill"];
+    UIImage *starImage = [UIImage imageNamed:@"ice-skating"];
     if (starImage) {
-        // Tint the image yellow and resize
-        UIImage *tintedStar = [starImage imageWithTintColor:[UIColor systemYellowColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
-        starAttachment.image = tintedStar;
-        
-        CGFloat starSize = 18.0;
+        starAttachment.image = starImage;
+        CGFloat starSize = 36.0;
         starAttachment.bounds = CGRectMake(0, -2, starSize, starSize);
     }
     

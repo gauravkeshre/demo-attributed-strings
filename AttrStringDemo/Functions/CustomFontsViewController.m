@@ -25,16 +25,10 @@
                                                                                        NSForegroundColorAttributeName: [UIColor systemBlueColor]}]];
     
     // Monospace font
-    if (@available(iOS 13.0, *)) {
-        [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Monospace Font for Code (15pt)\n"
-                                                                               attributes:@{NSFontAttributeName: [UIFont monospacedSystemFontOfSize:15 weight:UIFontWeightRegular],
-                                                                                           NSForegroundColorAttributeName: [UIColor systemGreenColor],
-                                                                                           NSBackgroundColorAttributeName: [UIColor systemGray6Color]}]];
-    } else {
-        [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Courier Font for Code (15pt)\n"
-                                                                               attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Courier" size:15] ?: [UIFont systemFontOfSize:15],
-                                                                                           NSForegroundColorAttributeName: [UIColor systemGreenColor]}]];
-    }
+    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Monospace Font for Code (15pt)\n"
+                                                                           attributes:@{NSFontAttributeName: [UIFont monospacedSystemFontOfSize:15 weight:UIFontWeightRegular],
+                                                                                       NSForegroundColorAttributeName: [UIColor systemGreenColor],
+                                                                                       NSBackgroundColorAttributeName: [UIColor systemGray6Color]}]];
     
     // Different font families
     UIFont *georgiaFont = [UIFont fontWithName:@"Georgia" size:16];

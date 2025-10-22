@@ -17,13 +17,8 @@
     
     // Create and add SF Symbol attachment
     NSTextAttachment *starAttachment = [[NSTextAttachment alloc] init];
-    if (@available(iOS 13.0, *)) {
-        UIImage *starImage = [UIImage systemImageNamed:@"star.fill"];
-        starAttachment.image = [starImage imageWithTintColor:[UIColor systemYellowColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
-    } else {
-        // Fallback for earlier versions
-        starAttachment.image = nil;
-    }
+    UIImage *starImage = [UIImage systemImageNamed:@"star.fill"];
+    starAttachment.image = [starImage imageWithTintColor:[UIColor systemYellowColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
     starAttachment.bounds = CGRectMake(0, -2, 16, 16);
     NSAttributedString *starString = [NSAttributedString attributedStringWithAttachment:starAttachment];
     [attributedText appendAttributedString:starString];
@@ -32,12 +27,8 @@
     
     // Add heart icon
     NSTextAttachment *heartAttachment = [[NSTextAttachment alloc] init];
-    if (@available(iOS 13.0, *)) {
-        UIImage *heartImage = [UIImage systemImageNamed:@"heart.fill"];
-        heartAttachment.image = [heartImage imageWithTintColor:[UIColor systemRedColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
-    } else {
-        heartAttachment.image = nil;
-    }
+    UIImage *heartImage = [UIImage systemImageNamed:@"heart.fill"];
+    heartAttachment.image = [heartImage imageWithTintColor:[UIColor systemRedColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
     heartAttachment.bounds = CGRectMake(0, -2, 16, 16);
     NSAttributedString *heartString = [NSAttributedString attributedStringWithAttachment:heartAttachment];
     [attributedText appendAttributedString:heartString];
@@ -46,12 +37,8 @@
     
     // Add gear icon
     NSTextAttachment *gearAttachment = [[NSTextAttachment alloc] init];
-    if (@available(iOS 13.0, *)) {
-        UIImage *gearImage = [UIImage systemImageNamed:@"gear"];
-        gearAttachment.image = [gearImage imageWithTintColor:[UIColor systemGrayColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
-    } else {
-        gearAttachment.image = nil;
-    }
+    UIImage *gearImage = [UIImage systemImageNamed:@"gear"];
+    gearAttachment.image = [gearImage imageWithTintColor:[UIColor systemGrayColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
     gearAttachment.bounds = CGRectMake(0, -2, 16, 16);
     NSAttributedString *gearString = [NSAttributedString attributedStringWithAttachment:gearAttachment];
     [attributedText appendAttributedString:gearString];

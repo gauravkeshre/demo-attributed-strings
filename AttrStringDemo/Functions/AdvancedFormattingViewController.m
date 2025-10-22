@@ -75,12 +75,7 @@
     codeStyle.tailIndent = -16;
     codeStyle.paragraphSpacing = 12;
     
-    UIFont *codeFont;
-    if (@available(iOS 13.0, *)) {
-        codeFont = [UIFont monospacedSystemFontOfSize:14 weight:UIFontWeightRegular];
-    } else {
-        codeFont = [UIFont fontWithName:@"Courier" size:14] ?: [UIFont systemFontOfSize:14];
-    }
+    UIFont *codeFont = [UIFont monospacedSystemFontOfSize:14 weight:UIFontWeightRegular];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"// Code block with syntax highlighting\nlet message = \"Hello, World!\"\nprint(message)"
                                                                            attributes:@{NSFontAttributeName: codeFont,

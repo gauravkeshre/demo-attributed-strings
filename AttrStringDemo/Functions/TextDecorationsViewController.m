@@ -44,12 +44,10 @@
                                                                                        NSStrikethroughStyleAttributeName: @(NSUnderlineStyleSingle),
                                                                                        NSStrikethroughColorAttributeName: [UIColor systemRedColor]}]];
     
-    // Patterned underline (if available)
-    if (@available(iOS 9.0, *)) {
-        [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"This text has a patterned underline.\n"
-                                                                               attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle | NSUnderlinePatternDot),
-                                                                                           NSUnderlineColorAttributeName: [UIColor systemTealColor]}]];
-    }
+    // Patterned underline
+    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"This text has a patterned underline.\n"
+                                                                           attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle | NSUnderlinePatternDot),
+                                                                                       NSUnderlineColorAttributeName: [UIColor systemTealColor]}]];
     
     // Different color text with decorations
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Colored text with decorations."
