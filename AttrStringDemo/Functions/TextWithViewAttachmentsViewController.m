@@ -6,10 +6,11 @@
 //
 
 #import "TextWithViewAttachmentsViewController.h"
+#import "GKViewTextAttachment.h"
 
 @interface TextWithViewAttachmentsViewController ()
 
-@property (nonatomic, strong) NSMutableArray<UIView *> *embeddedViews;
+@property (nonatomic, strong) NSMutableArray<GKViewTextAttachment *> *embeddedAttachments;
 
 @end
 
@@ -17,39 +18,60 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.embeddedViews = [[NSMutableArray alloc] init];
+    self.embeddedAttachments = [[NSMutableArray alloc] init];
 }
 
-- (UIView *)createColoredView:(UIColor *)color size:(CGSize)size {
+- (GKViewTextAttachment *)createColoredViewAttachment:(UIColor *)color size:(CGSize)size {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     view.backgroundColor = color;
     view.layer.cornerRadius = 4.0;
     view.layer.borderWidth = 1.0;
     view.layer.borderColor = [UIColor systemGrayColor].CGColor;
-    return view;
+    
+    // Create attachment with the view
+    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
+    attachment.customView = view;
+    attachment.bounds = CGRectMake(0, -2, size.width, size.height);
+    
+    [self.embeddedAttachments addObject:attachment];
+    return attachment;
 }
 
-- (UIView *)createProgressView {
+- (GKViewTextAttachment *)createProgressViewAttachment {
     UIProgressView *progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
     progressView.frame = CGRectMake(0, 0, 80, 4);
     progressView.progress = 0.7;
     progressView.progressTintColor = [UIColor systemBlueColor];
     progressView.trackTintColor = [UIColor systemGray4Color];
-    return progressView;
+    
+    // Create attachment with the progress view
+    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
+    attachment.customView = progressView;
+    attachment.bounds = CGRectMake(0, -2, 80, 4);
+    
+    [self.embeddedAttachments addObject:attachment];
+    return attachment;
 }
 
-- (UIView *)createActivityIndicator {
+- (GKViewTextAttachment *)createActivityIndicatorAttachment {
     UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
     activityView.frame = CGRectMake(0, 0, 20, 20);
     activityView.color = [UIColor systemBlueColor];
     [activityView startAnimating];
-    return activityView;
+    
+    // Create attachment with the activity indicator
+    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
+    attachment.customView = activityView;
+    attachment.bounds = CGRectMake(0, -2, 20, 20);
+    
+    [self.embeddedAttachments addObject:attachment];
+    return attachment;
 }
 
-- (UIButton *)createButtonWithTitle:(NSString *)title 
-                        buttonType:(NSString *)buttonType
-                              size:(CGSize)size 
-                   backgroundColor:(UIColor *)backgroundColor {
+- (GKViewTextAttachment *)createButtonAttachmentWithTitle:(NSString *)title 
+                                              buttonType:(NSString *)buttonType
+                                                    size:(CGSize)size 
+                                         backgroundColor:(UIColor *)backgroundColor {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.frame = CGRectMake(0, 0, size.width, size.height);
     [button setTitle:title forState:UIControlStateNormal];
@@ -64,13 +86,18 @@
     // Add target for button tap
     [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
     
-    // Store button reference
-    [self.embeddedViews addObject:button];
+    // Create attachment with the button
+    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
+    attachment.customView = button;
+    attachment.bounds = CGRectMake(0, -4, size.width, size.height);
     
-    return button;
+    // Store attachment reference
+    [self.embeddedAttachments addObject:attachment];
+    
+    return attachment;
 }
 
-- (UISlider *)createSliderWithValue:(float)value size:(CGSize)size {
+- (GKViewTextAttachment *)createSliderAttachmentWithValue:(float)value size:(CGSize)size {
     UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     slider.minimumValue = 0.0;
     slider.maximumValue = 1.0;
@@ -81,19 +108,29 @@
     // Add target for value changes
     [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
     
-    [self.embeddedViews addObject:slider];
-    return slider;
+    // Create attachment with the slider
+    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
+    attachment.customView = slider;
+    attachment.bounds = CGRectMake(0, -2, size.width, size.height);
+    
+    [self.embeddedAttachments addObject:attachment];
+    return attachment;
 }
 
-- (UISwitch *)createSwitchWithValue:(BOOL)isOn {
+- (GKViewTextAttachment *)createSwitchAttachmentWithValue:(BOOL)isOn {
     UISwitch *switchControl = [[UISwitch alloc] init];
     switchControl.on = isOn;
     
     // Add target for value changes
     [switchControl addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
     
-    [self.embeddedViews addObject:switchControl];
-    return switchControl;
+    // Create attachment with the switch
+    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
+    attachment.customView = switchControl;
+    attachment.bounds = CGRectMake(0, -6, switchControl.frame.size.width, switchControl.frame.size.height);
+    
+    [self.embeddedAttachments addObject:attachment];
+    return attachment;
 }
 
 - (void)buttonTapped:(UIButton *)sender {
@@ -147,28 +184,28 @@
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Interactive Buttons: Tap "]];
     
     // Save button
-    UIButton *saveButton = [self createButtonWithTitle:@"Save" buttonType:@"save" size:CGSizeMake(50, 24) backgroundColor:[UIColor systemBlueColor]];
-    NSTextAttachment *saveAttachment = [[NSTextAttachment alloc] init];
-    saveAttachment.image = [self imageFromView:saveButton];
-    saveAttachment.bounds = CGRectMake(0, -4, 50, 24);
+    GKViewTextAttachment *saveAttachment = [self createButtonAttachmentWithTitle:@"Save" 
+                                                                      buttonType:@"save" 
+                                                                            size:CGSizeMake(50, 24) 
+                                                                 backgroundColor:[UIColor systemBlueColor]];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:saveAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" to save, "]];
     
     // Share button
-    UIButton *shareButton = [self createButtonWithTitle:@"Share" buttonType:@"share" size:CGSizeMake(55, 24) backgroundColor:[UIColor systemGreenColor]];
-    NSTextAttachment *shareAttachment = [[NSTextAttachment alloc] init];
-    shareAttachment.image = [self imageFromView:shareButton];
-    shareAttachment.bounds = CGRectMake(0, -4, 55, 24);
+    GKViewTextAttachment *shareAttachment = [self createButtonAttachmentWithTitle:@"Share" 
+                                                                       buttonType:@"share" 
+                                                                             size:CGSizeMake(55, 24) 
+                                                                  backgroundColor:[UIColor systemGreenColor]];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:shareAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" to share, or "]];
     
     // Info button
-    UIButton *infoButton = [self createButtonWithTitle:@"Info" buttonType:@"info" size:CGSizeMake(45, 24) backgroundColor:[UIColor systemOrangeColor]];
-    NSTextAttachment *infoAttachment = [[NSTextAttachment alloc] init];
-    infoAttachment.image = [self imageFromView:infoButton];
-    infoAttachment.bounds = CGRectMake(0, -4, 45, 24);
+    GKViewTextAttachment *infoAttachment = [self createButtonAttachmentWithTitle:@"Info" 
+                                                                      buttonType:@"info" 
+                                                                            size:CGSizeMake(45, 24) 
+                                                                 backgroundColor:[UIColor systemOrangeColor]];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:infoAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" for more details.\n\n"]];
@@ -177,19 +214,13 @@
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Interactive Controls: Adjust the slider "]];
     
     // Slider
-    UISlider *slider = [self createSliderWithValue:0.6 size:CGSizeMake(80, 20)];
-    NSTextAttachment *sliderAttachment = [[NSTextAttachment alloc] init];
-    sliderAttachment.image = [self imageFromView:slider];
-    sliderAttachment.bounds = CGRectMake(0, -2, 80, 20);
+    GKViewTextAttachment *sliderAttachment = [self createSliderAttachmentWithValue:0.6 size:CGSizeMake(80, 20)];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:sliderAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" or toggle the switch "]];
     
     // Switch
-    UISwitch *switchControl = [self createSwitchWithValue:YES];
-    NSTextAttachment *switchAttachment = [[NSTextAttachment alloc] init];
-    switchAttachment.image = [self imageFromView:switchControl];
-    switchAttachment.bounds = CGRectMake(0, -6, switchControl.frame.size.width, switchControl.frame.size.height);
+    GKViewTextAttachment *switchAttachment = [self createSwitchAttachmentWithValue:YES];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:switchAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" to see them in action.\n\n"]];
@@ -198,19 +229,13 @@
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Custom Views: Here are colored rectangles "]];
     
     // Red view
-    UIView *redView = [self createColoredView:[UIColor systemRedColor] size:CGSizeMake(30, 18)];
-    NSTextAttachment *redViewAttachment = [[NSTextAttachment alloc] init];
-    redViewAttachment.image = [self imageFromView:redView];
-    redViewAttachment.bounds = CGRectMake(0, -2, 30, 18);
+    GKViewTextAttachment *redViewAttachment = [self createColoredViewAttachment:[UIColor systemRedColor] size:CGSizeMake(30, 18)];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:redViewAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" and "]];
     
     // Green view
-    UIView *greenView = [self createColoredView:[UIColor systemGreenColor] size:CGSizeMake(25, 15)];
-    NSTextAttachment *greenViewAttachment = [[NSTextAttachment alloc] init];
-    greenViewAttachment.image = [self imageFromView:greenView];
-    greenViewAttachment.bounds = CGRectMake(0, -1, 25, 15);
+    GKViewTextAttachment *greenViewAttachment = [self createColoredViewAttachment:[UIColor systemGreenColor] size:CGSizeMake(25, 15)];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:greenViewAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" embedded in text.\n\n"]];
@@ -219,19 +244,13 @@
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Progress Indicators: Loading progress "]];
     
     // Progress view
-    UIView *progressView = [self createProgressView];
-    NSTextAttachment *progressAttachment = [[NSTextAttachment alloc] init];
-    progressAttachment.image = [self imageFromView:progressView];
-    progressAttachment.bounds = CGRectMake(0, -2, 80, 4);
+    GKViewTextAttachment *progressAttachment = [self createProgressViewAttachment];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:progressAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" and activity indicator "]];
     
     // Activity indicator
-    UIView *activityView = [self createActivityIndicator];
-    NSTextAttachment *activityAttachment = [[NSTextAttachment alloc] init];
-    activityAttachment.image = [self imageFromView:activityView];
-    activityAttachment.bounds = CGRectMake(0, -2, 20, 20);
+    GKViewTextAttachment *activityAttachment = [self createActivityIndicatorAttachment];
     [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:activityAttachment]];
     
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" show different states.\n\nAll these components are fully functional and seamlessly integrated into the attributed text flow!"]];
@@ -239,67 +258,88 @@
     self.attributedText = attributedText;
 }
 
-- (UIImage *)imageFromView:(UIView *)view {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0.0);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}
-
 - (void)setupDemoViews {
     [super setupDemoViews];
     
     // Add interactive views to the text view as subviews to make them functional
     if (self.demoTextView) {
-        for (UIView *view in self.embeddedViews) {
-            [self.demoTextView addSubview:view];
+        for (GKViewTextAttachment *attachment in self.embeddedAttachments) {
+            if (attachment.customView) {
+                [self.demoTextView addSubview:attachment.customView];
+            }
         }
         
-        // Position views manually since NSTextAttachment images are static
-        [self positionEmbeddedViews];
+        // Ensure layout is complete before positioning
+        [self.demoTextView setNeedsLayout];
+        [self.demoTextView layoutIfNeeded];
+        
+        // Position views after layout is complete
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self positionEmbeddedViews];
+        });
     }
 }
 
 - (void)positionEmbeddedViews {
-    // This is a simplified positioning approach
-    // In production, you'd need sophisticated text layout calculations
-    
-    if (self.embeddedViews.count >= 6) {
-        CGFloat baseY = 40;  // Starting Y position
-        CGFloat lineHeight = 25;  // Approximate line height
-        
-        // Position buttons (first 3 views)
-        if ([self.embeddedViews[0] isKindOfClass:[UIButton class]]) {
-            UIButton *saveButton = (UIButton *)self.embeddedViews[0];
-            saveButton.frame = CGRectMake(100, baseY, 50, 24);
-            
-            UIButton *shareButton = (UIButton *)self.embeddedViews[1];
-            shareButton.frame = CGRectMake(180, baseY, 55, 24);
-            
-            UIButton *infoButton = (UIButton *)self.embeddedViews[2];
-            infoButton.frame = CGRectMake(270, baseY, 45, 24);
-        }
-        
-        // Position slider and switch
-        if (self.embeddedViews.count > 3) {
-            if ([self.embeddedViews[3] isKindOfClass:[UISlider class]]) {
-                UISlider *slider = (UISlider *)self.embeddedViews[3];
-                slider.frame = CGRectMake(160, baseY + lineHeight * 2, 80, 20);
-            }
-            
-            if ([self.embeddedViews[4] isKindOfClass:[UISwitch class]]) {
-                UISwitch *switchControl = (UISwitch *)self.embeddedViews[4];
-                CGRect switchFrame = switchControl.frame;
-                switchControl.frame = CGRectMake(280, baseY + lineHeight * 2 - 6, switchFrame.size.width, switchFrame.size.height);
-            }
-        }
+    if (!self.demoTextView || !self.demoTextView.textStorage || self.embeddedAttachments.count == 0) {
+        NSLog(@"Cannot position views - missing components");
+        return;
     }
+    
+    // Get the layout manager and text container for precise positioning
+    NSLayoutManager *layoutManager = self.demoTextView.layoutManager;
+    NSTextContainer *textContainer = self.demoTextView.textContainer;
+    
+    // Find positions of attachments in the text
+    NSAttributedString *attributedString = self.demoTextView.attributedText;
+    
+    NSLog(@"Positioning %lu attachments in text of length %lu", (unsigned long)self.embeddedAttachments.count, (unsigned long)attributedString.length);
+    
+    // Find and position each attachment
+    [attributedString enumerateAttribute:NSAttachmentAttributeName 
+                                 inRange:NSMakeRange(0, attributedString.length) 
+                                 options:0 
+                              usingBlock:^(id value, NSRange range, BOOL *stop) {
+        if ([value isKindOfClass:[GKViewTextAttachment class]]) {
+            GKViewTextAttachment *attachment = (GKViewTextAttachment *)value;
+            
+            // Get the glyph range and bounding rect for this attachment
+            NSRange glyphRange = [layoutManager glyphRangeForCharacterRange:range actualCharacterRange:nil];
+            
+            if (glyphRange.location != NSNotFound) {
+                CGRect boundingRect = [layoutManager boundingRectForGlyphRange:glyphRange inTextContainer:textContainer];
+                
+                // Adjust for text view insets and content offset
+                CGFloat x = boundingRect.origin.x + self.demoTextView.textContainerInset.left;
+                CGFloat y = boundingRect.origin.y + self.demoTextView.textContainerInset.top;
+                
+                NSLog(@"Positioning attachment at (%.1f, %.1f) with bounds: %@", x, y, NSStringFromCGRect(boundingRect));
+                
+                // Position the actual interactive view over the rendered image
+                if (attachment.customView) {
+                    CGRect currentFrame = attachment.customView.frame;
+                    attachment.customView.frame = CGRectMake(x, y, currentFrame.size.width, currentFrame.size.height);
+                    NSLog(@"Set view frame to: %@", NSStringFromCGRect(attachment.customView.frame));
+                }
+            }
+        }
+    }];
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [self positionEmbeddedViews];
+}
+
+- (void)setAttributedText:(NSAttributedString *)attributedText {
+    [super setAttributedText:attributedText];
+    
+    // Position views after the attributed text is set and layout is updated
+    if (self.isViewLoaded && self.demoTextView) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self positionEmbeddedViews];
+        });
+    }
 }
 
 @end
