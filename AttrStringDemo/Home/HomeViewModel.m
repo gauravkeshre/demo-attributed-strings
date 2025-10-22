@@ -40,10 +40,30 @@
                                    className:@"TextWithLinksViewController"
                                     iconName:@"link"],
         
+        [[HomeViewModel alloc] initWithTitle:@"Interactive Links"
+                                 description:@"Links handled within the app using custom actions and alerts"
+                                   className:@"InteractiveLinksViewController"
+                                    iconName:@"hand.tap"],
+        
         [[HomeViewModel alloc] initWithTitle:@"Text with Attachments"
                                  description:@"Images and custom views embedded using NSTextAttachment"
                                    className:@"TextWithAttachmentsViewController"
                                     iconName:@"photo.on.rectangle"],
+        
+        [[HomeViewModel alloc] initWithTitle:@"Text with Image Attachments"
+                                 description:@"PNG images embedded within attributed text using NSTextAttachment"
+                                   className:@"TextWithImageAttachmentsViewController"
+                                    iconName:@"photo"],
+        
+        [[HomeViewModel alloc] initWithTitle:@"Text with View Attachments"
+                                 description:@"Custom UIView components embedded within attributed text"
+                                   className:@"TextWithViewAttachmentsViewController"
+                                    iconName:@"square.on.circle"],
+        
+        [[HomeViewModel alloc] initWithTitle:@"Text with Button Attachments"
+                                 description:@"Interactive UIButton components embedded within text with tap handlers"
+                                   className:@"TextWithButtonAttachmentsViewController"
+                                    iconName:@"button.horizontal"],
         
         [[HomeViewModel alloc] initWithTitle:@"Styled Paragraphs"
                                  description:@"Different paragraph styles, spacing, and alignment"
