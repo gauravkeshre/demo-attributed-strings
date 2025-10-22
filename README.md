@@ -1,4 +1,5 @@
 # NSAttributedString Demo
+![Objective-C](https://img.shields.io/badge/ObjC-gray.svg?)
 
 A comprehensive iOS demo application showcasing the power and versatility of `NSAttributedString` for rich text formatting and interactive text elements.
 
