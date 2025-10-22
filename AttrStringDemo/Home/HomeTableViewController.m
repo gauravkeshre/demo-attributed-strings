@@ -9,20 +9,6 @@
 #import "HomeViewModel.h"
 #import "TableHeaderView.h"
 #import "BaseDetailViewController.h"
-#import "PlainTextViewController.h"
-#import "PartiallyFormattedViewController.h"
-#import "TextWithLinksViewController.h"
-#import "InteractiveLinksViewController.h"
-#import "TextWithAttachmentsViewController.h"
-#import "TextWithImageAttachmentsViewController.h"
-#import "TextWithViewAttachmentsViewController.h"
-#import "TextWithButtonAttachmentsViewController.h"
-#import "StyledParagraphsViewController.h"
-#import "CustomFontsViewController.h"
-#import "TextDecorationsViewController.h"
-#import "ShadowEffectsViewController.h"
-#import "BackgroundColorsViewController.h"
-#import "AdvancedFormattingViewController.h"
 
 @interface HomeTableViewController ()
 

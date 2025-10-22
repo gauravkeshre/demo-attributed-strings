@@ -56,14 +56,9 @@
                                     iconName:@"photo"],
         
         [[HomeViewModel alloc] initWithTitle:@"Text with View Attachments"
-                                 description:@"Custom UIView components embedded within attributed text"
+                                 description:@"Interactive UI components (buttons, sliders, switches, views) embedded within attributed text"
                                    className:@"TextWithViewAttachmentsViewController"
                                     iconName:@"square.on.circle"],
-        
-        [[HomeViewModel alloc] initWithTitle:@"Text with Button Attachments"
-                                 description:@"Interactive UIButton components embedded within text with tap handlers"
-                                   className:@"TextWithButtonAttachmentsViewController"
-                                    iconName:@"button.horizontal"],
         
         [[HomeViewModel alloc] initWithTitle:@"Styled Paragraphs"
                                  description:@"Different paragraph styles, spacing, and alignment"
