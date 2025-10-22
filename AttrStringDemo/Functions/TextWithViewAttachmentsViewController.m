@@ -1,77 +1,38 @@
-//
-//  TextWithViewAttachmentsViewController.m
-//  AttrStringDemo
-//
-//  Created by Gaurav Keshre on 23/10/25.
-//
-
 #import "TextWithViewAttachmentsViewController.h"
-#import "GKViewTextAttachment.h"
-
-@interface TextWithViewAttachmentsViewController ()
-
-@property (nonatomic, strong) NSMutableArray<GKViewTextAttachment *> *embeddedAttachments;
-
-@end
+#import "GKSubviewTextAttachment.h"
 
 @implementation TextWithViewAttachmentsViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.embeddedAttachments = [[NSMutableArray alloc] init];
-}
-
-- (GKViewTextAttachment *)createColoredViewAttachment:(UIColor *)color size:(CGSize)size {
+- (UIView *)createColoredViewWithColor:(UIColor *)color size:(CGSize)size {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     view.backgroundColor = color;
     view.layer.cornerRadius = 4.0;
     view.layer.borderWidth = 1.0;
     view.layer.borderColor = [UIColor systemGrayColor].CGColor;
-    
-    // Create attachment with the view
-    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
-    attachment.customView = view;
-    attachment.bounds = CGRectMake(0, -2, size.width, size.height);
-    
-    [self.embeddedAttachments addObject:attachment];
-    return attachment;
+    return view;
 }
 
-- (GKViewTextAttachment *)createProgressViewAttachment {
+- (UIProgressView *)createProgressView {
     UIProgressView *progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
     progressView.frame = CGRectMake(0, 0, 80, 4);
     progressView.progress = 0.7;
     progressView.progressTintColor = [UIColor systemBlueColor];
     progressView.trackTintColor = [UIColor systemGray4Color];
-    
-    // Create attachment with the progress view
-    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
-    attachment.customView = progressView;
-    attachment.bounds = CGRectMake(0, -2, 80, 4);
-    
-    [self.embeddedAttachments addObject:attachment];
-    return attachment;
+    return progressView;
 }
 
-- (GKViewTextAttachment *)createActivityIndicatorAttachment {
+- (UIActivityIndicatorView *)createActivityIndicator {
     UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
     activityView.frame = CGRectMake(0, 0, 20, 20);
     activityView.color = [UIColor systemBlueColor];
     [activityView startAnimating];
-    
-    // Create attachment with the activity indicator
-    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
-    attachment.customView = activityView;
-    attachment.bounds = CGRectMake(0, -2, 20, 20);
-    
-    [self.embeddedAttachments addObject:attachment];
-    return attachment;
+    return activityView;
 }
 
-- (GKViewTextAttachment *)createButtonAttachmentWithTitle:(NSString *)title 
-                                              buttonType:(NSString *)buttonType
-                                                    size:(CGSize)size 
-                                         backgroundColor:(UIColor *)backgroundColor {
+- (UIButton *)createButtonWithTitle:(NSString *)title 
+                         buttonType:(NSString *)buttonType
+                               size:(CGSize)size 
+                    backgroundColor:(UIColor *)backgroundColor {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.frame = CGRectMake(0, 0, size.width, size.height);
     [button setTitle:title forState:UIControlStateNormal];
@@ -86,18 +47,10 @@
     // Add target for button tap
     [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
     
-    // Create attachment with the button
-    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
-    attachment.customView = button;
-    attachment.bounds = CGRectMake(0, -4, size.width, size.height);
-    
-    // Store attachment reference
-    [self.embeddedAttachments addObject:attachment];
-    
-    return attachment;
+    return button;
 }
 
-- (GKViewTextAttachment *)createSliderAttachmentWithValue:(float)value size:(CGSize)size {
+- (UISlider *)createSliderWithValue:(float)value size:(CGSize)size {
     UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     slider.minimumValue = 0.0;
     slider.maximumValue = 1.0;
@@ -108,45 +61,32 @@
     // Add target for value changes
     [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
     
-    // Create attachment with the slider
-    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
-    attachment.customView = slider;
-    attachment.bounds = CGRectMake(0, -2, size.width, size.height);
-    
-    [self.embeddedAttachments addObject:attachment];
-    return attachment;
+    return slider;
 }
 
-- (GKViewTextAttachment *)createSwitchAttachmentWithValue:(BOOL)isOn {
+- (UISwitch *)createSwitchWithValue:(BOOL)isOn {
     UISwitch *switchControl = [[UISwitch alloc] init];
     switchControl.on = isOn;
     
     // Add target for value changes
     [switchControl addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
     
-    // Create attachment with the switch
-    GKViewTextAttachment *attachment = [[GKViewTextAttachment alloc] init];
-    attachment.customView = switchControl;
-    attachment.bounds = CGRectMake(0, -6, switchControl.frame.size.width, switchControl.frame.size.height);
-    
-    [self.embeddedAttachments addObject:attachment];
-    return attachment;
+    return switchControl;
 }
 
 - (void)buttonTapped:(UIButton *)sender {
-    NSString *buttonType = sender.accessibilityIdentifier;
     NSString *title;
     NSString *message;
     
-    if ([buttonType isEqualToString:@"save"]) {
-        title = @"Save Action";
-        message = @"Save button was tapped! This could save your current progress or document.";
-    } else if ([buttonType isEqualToString:@"share"]) {
-        title = @"Share Action";
-        message = @"Share button was tapped! This could open sharing options for your content.";
-    } else if ([buttonType isEqualToString:@"info"]) {
-        title = @"Info Action";
-        message = @"Info button was tapped! This could show additional information or help.";
+    if ([sender.accessibilityIdentifier isEqualToString:@"save"]) {
+        title = @"Save Button Tapped";
+        message = @"The embedded save button was tapped!";
+    } else if ([sender.accessibilityIdentifier isEqualToString:@"edit"]) {
+        title = @"Edit Button Tapped";
+        message = @"The embedded edit button was tapped!";
+    } else if ([sender.accessibilityIdentifier isEqualToString:@"delete"]) {
+        title = @"Delete Button Tapped";
+        message = @"The embedded delete button was tapped!";
     } else {
         title = @"Button Tapped";
         message = @"An embedded button was tapped!";
@@ -177,169 +117,182 @@
 - (void)setupAttributedText {
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] init];
     
-    // Introduction
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"This demonstrates various interactive UI components embedded within attributed text.\n\n"]];
+    // Title
+    NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"Interactive UI Elements in Text\n\n" 
+                                                                attributes:@{
+        NSForegroundColorAttributeName: [UIColor labelColor],
+        NSFontAttributeName: [UIFont boldSystemFontOfSize:20]
+    }];
+    [attributedText appendAttributedString:title];
     
-    // Buttons section
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Interactive Buttons: Tap "]];
+    // Colored views section
+    NSAttributedString *coloredViewsText = [[NSAttributedString alloc] initWithString:@"Colored Views: " 
+                                                                          attributes:@{
+        NSForegroundColorAttributeName: [UIColor labelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:16 weight:UIFontWeightMedium]
+    }];
+    [attributedText appendAttributedString:coloredViewsText];
+    
+    // Red view attachment
+    UIView *redView = [self createColoredViewWithColor:[UIColor systemRedColor] size:CGSizeMake(20, 16)];
+    GKSubviewTextAttachment *redViewAttachment = [[GKSubviewTextAttachment alloc] initWithView:redView];
+    NSAttributedString *redViewAttrStr = [NSAttributedString attributedStringWithAttachment:redViewAttachment];
+    [attributedText appendAttributedString:redViewAttrStr];
+    
+    NSAttributedString *spacer = [[NSAttributedString alloc] initWithString:@" "];
+    [attributedText appendAttributedString:spacer];
+    
+    // Green view attachment
+    UIView *greenView = [self createColoredViewWithColor:[UIColor systemGreenColor] size:CGSizeMake(20, 16)];
+    GKSubviewTextAttachment *greenViewAttachment = [[GKSubviewTextAttachment alloc] initWithView:greenView];
+    NSAttributedString *greenViewAttrStr = [NSAttributedString attributedStringWithAttachment:greenViewAttachment];
+    [attributedText appendAttributedString:greenViewAttrStr];
+    
+    [attributedText appendAttributedString:spacer];
+    
+    // Blue view attachment
+    UIView *blueView = [self createColoredViewWithColor:[UIColor systemBlueColor] size:CGSizeMake(20, 16)];
+    GKSubviewTextAttachment *blueViewAttachment = [[GKSubviewTextAttachment alloc] initWithView:blueView];
+    NSAttributedString *blueViewAttrStr = [NSAttributedString attributedStringWithAttachment:blueViewAttachment];
+    [attributedText appendAttributedString:blueViewAttrStr];
+    
+    NSAttributedString *newline = [[NSAttributedString alloc] initWithString:@"\n\n"];
+    [attributedText appendAttributedString:newline];
+    
+    // Progress view section
+    NSAttributedString *progressText = [[NSAttributedString alloc] initWithString:@"Progress: " 
+                                                                      attributes:@{
+        NSForegroundColorAttributeName: [UIColor labelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:16 weight:UIFontWeightMedium]
+    }];
+    [attributedText appendAttributedString:progressText];
+    
+    UIProgressView *progressView = [self createProgressView];
+    GKSubviewTextAttachment *progressAttachment = [[GKSubviewTextAttachment alloc] initWithView:progressView];
+    NSAttributedString *progressAttrStr = [NSAttributedString attributedStringWithAttachment:progressAttachment];
+    [attributedText appendAttributedString:progressAttrStr];
+    
+    NSAttributedString *progressLabel = [[NSAttributedString alloc] initWithString:@" 70%" 
+                                                                       attributes:@{
+        NSForegroundColorAttributeName: [UIColor secondaryLabelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:14]
+    }];
+    [attributedText appendAttributedString:progressLabel];
+    [attributedText appendAttributedString:newline];
+    
+    // Activity indicator section
+    NSAttributedString *activityText = [[NSAttributedString alloc] initWithString:@"Loading: " 
+                                                                      attributes:@{
+        NSForegroundColorAttributeName: [UIColor labelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:16 weight:UIFontWeightMedium]
+    }];
+    [attributedText appendAttributedString:activityText];
+    
+    UIActivityIndicatorView *activityView = [self createActivityIndicator];
+    GKSubviewTextAttachment *activityAttachment = [[GKSubviewTextAttachment alloc] initWithView:activityView];
+    NSAttributedString *activityAttrStr = [NSAttributedString attributedStringWithAttachment:activityAttachment];
+    [attributedText appendAttributedString:activityAttrStr];
+    
+    NSAttributedString *activityLabel = [[NSAttributedString alloc] initWithString:@" Processing..." 
+                                                                       attributes:@{
+        NSForegroundColorAttributeName: [UIColor secondaryLabelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:14]
+    }];
+    [attributedText appendAttributedString:activityLabel];
+    [attributedText appendAttributedString:newline];
+    
+    // Button section
+    NSAttributedString *buttonText = [[NSAttributedString alloc] initWithString:@"Actions: " 
+                                                                    attributes:@{
+        NSForegroundColorAttributeName: [UIColor labelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:16 weight:UIFontWeightMedium]
+    }];
+    [attributedText appendAttributedString:buttonText];
     
     // Save button
-    GKViewTextAttachment *saveAttachment = [self createButtonAttachmentWithTitle:@"Save" 
-                                                                      buttonType:@"save" 
-                                                                            size:CGSizeMake(50, 24) 
-                                                                 backgroundColor:[UIColor systemBlueColor]];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:saveAttachment]];
+    UIButton *saveButton = [self createButtonWithTitle:@"Save" 
+                                            buttonType:@"save" 
+                                                  size:CGSizeMake(50, 28) 
+                                       backgroundColor:[UIColor systemBlueColor]];
+    GKSubviewTextAttachment *saveButtonAttachment = [[GKSubviewTextAttachment alloc] initWithView:saveButton];
+    NSAttributedString *saveButtonAttrStr = [NSAttributedString attributedStringWithAttachment:saveButtonAttachment];
+    [attributedText appendAttributedString:saveButtonAttrStr];
     
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" to save, "]];
+    [attributedText appendAttributedString:spacer];
     
-    // Share button
-    GKViewTextAttachment *shareAttachment = [self createButtonAttachmentWithTitle:@"Share" 
-                                                                       buttonType:@"share" 
-                                                                             size:CGSizeMake(55, 24) 
-                                                                  backgroundColor:[UIColor systemGreenColor]];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:shareAttachment]];
+    // Edit button
+    UIButton *editButton = [self createButtonWithTitle:@"Edit" 
+                                            buttonType:@"edit" 
+                                                  size:CGSizeMake(50, 28) 
+                                       backgroundColor:[UIColor systemOrangeColor]];
+    GKSubviewTextAttachment *editButtonAttachment = [[GKSubviewTextAttachment alloc] initWithView:editButton];
+    NSAttributedString *editButtonAttrStr = [NSAttributedString attributedStringWithAttachment:editButtonAttachment];
+    [attributedText appendAttributedString:editButtonAttrStr];
     
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" to share, or "]];
+    [attributedText appendAttributedString:spacer];
     
-    // Info button
-    GKViewTextAttachment *infoAttachment = [self createButtonAttachmentWithTitle:@"Info" 
-                                                                      buttonType:@"info" 
-                                                                            size:CGSizeMake(45, 24) 
-                                                                 backgroundColor:[UIColor systemOrangeColor]];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:infoAttachment]];
+    // Delete button
+    UIButton *deleteButton = [self createButtonWithTitle:@"Delete" 
+                                              buttonType:@"delete" 
+                                                    size:CGSizeMake(60, 28) 
+                                         backgroundColor:[UIColor systemRedColor]];
+    GKSubviewTextAttachment *deleteButtonAttachment = [[GKSubviewTextAttachment alloc] initWithView:deleteButton];
+    NSAttributedString *deleteButtonAttrStr = [NSAttributedString attributedStringWithAttachment:deleteButtonAttachment];
+    [attributedText appendAttributedString:deleteButtonAttrStr];
     
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" for more details.\n\n"]];
+    [attributedText appendAttributedString:newline];
     
-    // Controls section
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Interactive Controls: Adjust the slider "]];
+    // Slider section
+    NSAttributedString *sliderText = [[NSAttributedString alloc] initWithString:@"Volume: " 
+                                                                    attributes:@{
+        NSForegroundColorAttributeName: [UIColor labelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:16 weight:UIFontWeightMedium]
+    }];
+    [attributedText appendAttributedString:sliderText];
     
-    // Slider
-    GKViewTextAttachment *sliderAttachment = [self createSliderAttachmentWithValue:0.6 size:CGSizeMake(80, 20)];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:sliderAttachment]];
+    UISlider *slider = [self createSliderWithValue:0.6 size:CGSizeMake(100, 20)];
+    GKSubviewTextAttachment *sliderAttachment = [[GKSubviewTextAttachment alloc] initWithView:slider];
+    NSAttributedString *sliderAttrStr = [NSAttributedString attributedStringWithAttachment:sliderAttachment];
+    [attributedText appendAttributedString:sliderAttrStr];
     
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" or toggle the switch "]];
+    NSAttributedString *sliderLabel = [[NSAttributedString alloc] initWithString:@" 60%" 
+                                                                     attributes:@{
+        NSForegroundColorAttributeName: [UIColor secondaryLabelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:14]
+    }];
+    [attributedText appendAttributedString:sliderLabel];
+    [attributedText appendAttributedString:newline];
     
-    // Switch
-    GKViewTextAttachment *switchAttachment = [self createSwitchAttachmentWithValue:YES];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:switchAttachment]];
+    // Switch section
+    NSAttributedString *switchText = [[NSAttributedString alloc] initWithString:@"Notifications: " 
+                                                                    attributes:@{
+        NSForegroundColorAttributeName: [UIColor labelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:16 weight:UIFontWeightMedium]
+    }];
+    [attributedText appendAttributedString:switchText];
     
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" to see them in action.\n\n"]];
+    UISwitch *switchControl = [self createSwitchWithValue:YES];
+    GKSubviewTextAttachment *switchAttachment = [[GKSubviewTextAttachment alloc] initWithView:switchControl];
+    NSAttributedString *switchAttrStr = [NSAttributedString attributedStringWithAttachment:switchAttachment];
+    [attributedText appendAttributedString:switchAttrStr];
     
-    // Views section
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Custom Views: Here are colored rectangles "]];
+    NSAttributedString *switchLabel = [[NSAttributedString alloc] initWithString:@" Enabled" 
+                                                                     attributes:@{
+        NSForegroundColorAttributeName: [UIColor secondaryLabelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:14]
+    }];
+    [attributedText appendAttributedString:switchLabel];
+    [attributedText appendAttributedString:newline];
     
-    // Red view
-    GKViewTextAttachment *redViewAttachment = [self createColoredViewAttachment:[UIColor systemRedColor] size:CGSizeMake(30, 18)];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:redViewAttachment]];
-    
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" and "]];
-    
-    // Green view
-    GKViewTextAttachment *greenViewAttachment = [self createColoredViewAttachment:[UIColor systemGreenColor] size:CGSizeMake(25, 15)];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:greenViewAttachment]];
-    
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" embedded in text.\n\n"]];
-    
-    // Progress and activity section
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@"Progress Indicators: Loading progress "]];
-    
-    // Progress view
-    GKViewTextAttachment *progressAttachment = [self createProgressViewAttachment];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:progressAttachment]];
-    
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" and activity indicator "]];
-    
-    // Activity indicator
-    GKViewTextAttachment *activityAttachment = [self createActivityIndicatorAttachment];
-    [attributedText appendAttributedString:[NSAttributedString attributedStringWithAttachment:activityAttachment]];
-    
-    [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:@" show different states.\n\nAll these components are fully functional and seamlessly integrated into the attributed text flow!"]];
+    // Footer text
+    NSAttributedString *footerText = [[NSAttributedString alloc] initWithString:@"\nAll of these UI elements are embedded directly in the text and are fully interactive. You can tap buttons, adjust sliders, and toggle switches." 
+                                                                    attributes:@{
+        NSForegroundColorAttributeName: [UIColor secondaryLabelColor],
+        NSFontAttributeName: [UIFont italicSystemFontOfSize:14]
+    }];
+    [attributedText appendAttributedString:footerText];
     
     self.attributedText = attributedText;
-}
-
-- (void)setupDemoViews {
-    [super setupDemoViews];
-    
-    // Add interactive views to the text view as subviews to make them functional
-    if (self.demoTextView) {
-        for (GKViewTextAttachment *attachment in self.embeddedAttachments) {
-            if (attachment.customView) {
-                [self.demoTextView addSubview:attachment.customView];
-            }
-        }
-        
-        // Ensure layout is complete before positioning
-        [self.demoTextView setNeedsLayout];
-        [self.demoTextView layoutIfNeeded];
-        
-        // Position views after layout is complete
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self positionEmbeddedViews];
-        });
-    }
-}
-
-- (void)positionEmbeddedViews {
-    if (!self.demoTextView || !self.demoTextView.textStorage || self.embeddedAttachments.count == 0) {
-        NSLog(@"Cannot position views - missing components");
-        return;
-    }
-    
-    // Get the layout manager and text container for precise positioning
-    NSLayoutManager *layoutManager = self.demoTextView.layoutManager;
-    NSTextContainer *textContainer = self.demoTextView.textContainer;
-    
-    // Find positions of attachments in the text
-    NSAttributedString *attributedString = self.demoTextView.attributedText;
-    
-    NSLog(@"Positioning %lu attachments in text of length %lu", (unsigned long)self.embeddedAttachments.count, (unsigned long)attributedString.length);
-    
-    // Find and position each attachment
-    [attributedString enumerateAttribute:NSAttachmentAttributeName 
-                                 inRange:NSMakeRange(0, attributedString.length) 
-                                 options:0 
-                              usingBlock:^(id value, NSRange range, BOOL *stop) {
-        if ([value isKindOfClass:[GKViewTextAttachment class]]) {
-            GKViewTextAttachment *attachment = (GKViewTextAttachment *)value;
-            
-            // Get the glyph range and bounding rect for this attachment
-            NSRange glyphRange = [layoutManager glyphRangeForCharacterRange:range actualCharacterRange:nil];
-            
-            if (glyphRange.location != NSNotFound) {
-                CGRect boundingRect = [layoutManager boundingRectForGlyphRange:glyphRange inTextContainer:textContainer];
-                
-                // Adjust for text view insets and content offset
-                CGFloat x = boundingRect.origin.x + self.demoTextView.textContainerInset.left;
-                CGFloat y = boundingRect.origin.y + self.demoTextView.textContainerInset.top;
-                
-                NSLog(@"Positioning attachment at (%.1f, %.1f) with bounds: %@", x, y, NSStringFromCGRect(boundingRect));
-                
-                // Position the actual interactive view over the rendered image
-                if (attachment.customView) {
-                    CGRect currentFrame = attachment.customView.frame;
-                    attachment.customView.frame = CGRectMake(x, y, currentFrame.size.width, currentFrame.size.height);
-                    NSLog(@"Set view frame to: %@", NSStringFromCGRect(attachment.customView.frame));
-                }
-            }
-        }
-    }];
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    [self positionEmbeddedViews];
-}
-
-- (void)setAttributedText:(NSAttributedString *)attributedText {
-    [super setAttributedText:attributedText];
-    
-    // Position views after the attributed text is set and layout is updated
-    if (self.isViewLoaded && self.demoTextView) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self positionEmbeddedViews];
-        });
-    }
 }
 
 @end

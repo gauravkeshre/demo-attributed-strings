@@ -8,6 +8,7 @@
 #import "BaseDetailViewController.h"
 #import "HomeViewModel.h"
 #import "TableHeaderView.h"
+#import "GKSubviewAttachingTextView.h"
 
 typedef NS_ENUM(NSInteger, DetailSection) {
     DetailSectionUILabel = 0,
@@ -74,8 +75,8 @@ typedef NS_ENUM(NSInteger, DetailSection) {
     self.demoLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.demoLabel.attributedText = self.attributedText;
     
-    // Create UITextView
-    self.demoTextView = [[UITextView alloc] init];
+    // Create GKSubviewAttachingTextView for interactive attachments
+    self.demoTextView = [[GKSubviewAttachingTextView alloc] init];
     self.demoTextView.editable = NO;
     self.demoTextView.scrollEnabled = NO;
     self.demoTextView.attributedText = self.attributedText;
