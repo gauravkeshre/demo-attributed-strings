@@ -39,15 +39,15 @@ This demo application demonstrates various text formatting capabilities availabl
 ## Screenshots
 
 ### Main Interface
-![Screenshot 1](screenshots/screenshot1.png)
+<img src="screenshots/screenshot1.png" width="220">
 *Main menu showing all available text formatting demos*
 
 ### Text Formatting Examples
-![Screenshot 2](screenshots/screenshot2.png)
+<img src="screenshots/screenshot2.png" width="220">
 *Various text formatting options including fonts, colors, and decorations*
 
 ### Interactive Elements
-![Screenshot 3](screenshots/screenshot3.png)
+<img src="screenshots/screenshot3.png" width="220">
 *Interactive UI elements embedded within attributed text*
 
 ## Architecture
