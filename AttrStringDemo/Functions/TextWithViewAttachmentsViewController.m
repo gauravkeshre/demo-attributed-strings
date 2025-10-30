@@ -31,15 +31,20 @@
 
 - (UIButton *)createButtonWithTitle:(NSString *)title 
                          buttonType:(NSString *)buttonType
-                               size:(CGSize)size 
+                               height:(CGFloat)height 
                     backgroundColor:(UIColor *)backgroundColor {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.frame = CGRectMake(0, 0, size.width, size.height);
     [button setTitle:title forState:UIControlStateNormal];
     button.backgroundColor = backgroundColor;
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     button.titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightMedium];
     button.layer.cornerRadius = 4.0;
+    
+    // Calculate the width based on text content with padding
+    CGSize textSize = [title sizeWithAttributes:@{NSFontAttributeName: button.titleLabel.font}];
+    CGFloat buttonWidth = textSize.width + 16.0; // Add 8pt padding on each side
+    
+    button.frame = CGRectMake(0, 0, buttonWidth, height);
     
     // Set accessibility identifier to distinguish buttons
     button.accessibilityIdentifier = buttonType;
@@ -212,7 +217,7 @@
     // Save button
     UIButton *saveButton = [self createButtonWithTitle:@"Save" 
                                             buttonType:@"save" 
-                                                  size:CGSizeMake(50, 28) 
+                                                height:28 
                                        backgroundColor:[UIColor systemBlueColor]];
     GKSubviewTextAttachment *saveButtonAttachment = [[GKSubviewTextAttachment alloc] initWithView:saveButton];
     NSAttributedString *saveButtonAttrStr = [NSAttributedString attributedStringWithAttachment:saveButtonAttachment];
@@ -223,7 +228,7 @@
     // Edit button
     UIButton *editButton = [self createButtonWithTitle:@"Edit" 
                                             buttonType:@"edit" 
-                                                  size:CGSizeMake(50, 28) 
+                                                height:28 
                                        backgroundColor:[UIColor systemOrangeColor]];
     GKSubviewTextAttachment *editButtonAttachment = [[GKSubviewTextAttachment alloc] initWithView:editButton];
     NSAttributedString *editButtonAttrStr = [NSAttributedString attributedStringWithAttachment:editButtonAttachment];
@@ -234,7 +239,7 @@
     // Delete button
     UIButton *deleteButton = [self createButtonWithTitle:@"Delete" 
                                               buttonType:@"delete" 
-                                                    size:CGSizeMake(60, 28) 
+                                                  height:28 
                                          backgroundColor:[UIColor systemRedColor]];
     GKSubviewTextAttachment *deleteButtonAttachment = [[GKSubviewTextAttachment alloc] initWithView:deleteButton];
     NSAttributedString *deleteButtonAttrStr = [NSAttributedString attributedStringWithAttachment:deleteButtonAttachment];
